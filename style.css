@@ -1,0 +1,271 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+/* ================= RESET ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Space Mono', sans-serif;
+}
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+body {
+    min-height: 100vh;
+    background: linear-gradient(to right, #0e0c14, #1a1522); /* darker black-purple bg */
+    color: #e6edf3;
+}
+
+/* ================= GLOBAL THREE.JS BACKGROUND ================= */
+#three-bg {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.35;
+    /* Add a grape purple tint to your Three.js if you can adjust colors in Three.js code */
+}
+
+/* ================= NAVBAR ================= */
+nav {
+    width: 100%;
+    height: 10vh;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(14, 12, 23, 0.85);
+    backdrop-filter: blur(12px);
+}
+.nav-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.logo {
+    font-size: 2rem;
+    font-weight: 700;
+}
+.logo span {
+    color: #c58ff0; /* light grape purple */
+}
+
+/* ================= NAV LINKS ================= */
+.nav-container .links {
+    display: flex;
+    gap: 3rem;
+}
+.nav-container .links a {
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: #e6edf3;
+    position: relative;
+}
+.nav-container .links a::before {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background: #c58ff0; /* light grape purple underline */
+    transition: 0.3s;
+}
+.nav-container .links a:hover::before {
+    width: 100%;
+}
+
+/* CONTACT BUTTON */
+.contact-btn {
+    border: 2px solid #c58ff0;
+    padding: 5px 20px;
+    border-radius: 20px;
+}
+.contact-btn:hover {
+    background: #c58ff0;
+}
+.contact-btn:hover a {
+    color: #0e0c14;
+}
+
+/* ================= MOBILE MENU ================= */
+.hamburg, .cancel {
+    display: none;
+    font-size: 2rem;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
+    top: 15px;
+}
+.dropdown {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    transform: translateY(-500px);
+    background: rgba(14, 12, 23, 0.95);
+    backdrop-filter: blur(8px);
+    transition: 0.3s;
+    z-index: 999;
+}
+.dropdown .links a {
+    display: flex;
+    justify-content: center;
+    padding: 15px 0;
+    text-decoration: none;
+    color: #e6edf3;
+    font-size: 1.2rem;
+}
+.dropdown .links a:hover {
+    background: #c58ff0;
+    color: #0e0c14;
+}
+
+/* ================= SECTIONS ================= */
+section {
+    min-height: 100vh;
+    width: 100%;
+    padding: 100px 10%;
+    position: relative;
+    z-index: 1;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ================= HERO ================= */
+.hero {
+    min-height: 100vh;
+}
+.main-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.main-container .content {
+    width: 45%;
+    font-family: 'Space Grotesk', sans-serif;
+}
+.content h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+}
+.content h1 span {
+    color: #c58ff0;
+    text-shadow: 0 0 15px #c58ff0;
+}
+
+/* TYPEWRITER */
+.typewriter {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #b8aadf; /* softer light purple for text */
+}
+.typewriter span {
+    color: #c58ff0;
+}
+.typewriter span::before {
+    content: " a Developer";
+    animation: words 15s infinite;
+}
+.typewriter span::after {
+    content: "";
+    margin-left: 5px;
+    border-left: 3px solid #e6edf3;
+    animation: cursor 0.6s infinite;
+}
+@keyframes cursor {
+    50% { border-color: transparent; }
+}
+@keyframes words {
+    0%, 33% { content: " a Developer"; }
+    34%, 66% { content: " an Engineering Student"; }
+    67%, 100% { content: " a ML Enthusiast"; }
+}
+.content p {
+    margin: 15px 0;
+    font-size: 1rem;
+    color: #b8aadf;
+}
+
+/* SOCIAL ICONS */
+.social-links i {
+    width: 3rem;
+    height: 3rem;
+    border: 2px solid #c58ff0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #c58ff0;
+    margin: 10px 10px 10px 0;
+    font-size: 1.4rem;
+    transition: 0.3s;
+}
+.social-links i:hover {
+    background: #c58ff0;
+    color: #0e0c14;
+    transform: scale(1.15);
+}
+
+/* BUTTON */
+.content button {
+    width: 200px;
+    height: 45px;
+    margin-top: 20px;
+    background: #c58ff0;
+    color: #0e0c14;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.content button:hover {
+    background: transparent;
+    color: #c58ff0;
+    border: 2px solid #c58ff0;
+    box-shadow: 0 0 25px #c58ff0;
+}
+
+/* ================= ABOUT ================= */
+#about {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 50px;
+}
+#about h2 {
+    font-size: 100px;
+}
+.about-content {
+    max-width: 600px;
+}
+.about-content h1 {
+    font-size: 2.5rem;
+    color: #c58ff0;
+    margin-bottom: 20px;
+}
+.about-content p, .about-content li {
+    color: #b8aadf;
+    font-size: 1rem;
+    line-height: 1.7;
+}
+/*================SKILLS========================*/
+.section-container h2{
+    font-size:2.5rem;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 884px) {
+    nav .links { display: none; }
+    .hamburg, .cancel { display: block; }
+    .main-container { flex-direction: column; text-align: center; }
+    .main-container .image, .main-container .content { width: 90%; }
+    #about { flex-direction: column; text-align: center; }
+}
