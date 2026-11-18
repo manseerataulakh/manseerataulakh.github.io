@@ -1,271 +1,136 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+:root {
+  --paper: #F3F6F8;
+  --ink: #16202A;
+  --muted: #56636F;
+  --rule: #D5DCE2;
+  --link: #1D5CA8;
+  --c1: #2F6DB5;
+  --c2: #DD7A22;
+  --c3: #2E9D5B;
+  --c4: #7A55C7;
+  --serif: "Spectral", Georgia, serif;
+  --sans: "Public Sans", system-ui, sans-serif;
+}
 
-/* ================= RESET ================= */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Space Mono', sans-serif;
-}
-html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-}
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
 body {
-    min-height: 100vh;
-    background: linear-gradient(to right, #0e0c14, #1a1522); /* darker black-purple bg */
-    color: #e6edf3;
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* ================= GLOBAL THREE.JS BACKGROUND ================= */
-#three-bg {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: -1;
-    pointer-events: none;
-    opacity: 0.35;
-    /* Add a grape purple tint to your Three.js if you can adjust colors in Three.js code */
-}
+a { color: var(--link); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; border-radius: 2px; }
 
-/* ================= NAVBAR ================= */
-nav {
-    width: 100%;
-    height: 10vh;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: rgba(14, 12, 23, 0.85);
-    backdrop-filter: blur(12px);
-}
-.nav-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-.logo {
-    font-size: 2rem;
-    font-weight: 700;
-}
-.logo span {
-    color: #c58ff0; /* light grape purple */
-}
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 16px; top: 12px; background: #fff; padding: 6px 10px; z-index: 10; }
 
-/* ================= NAV LINKS ================= */
-.nav-container .links {
-    display: flex;
-    gap: 3rem;
+/* ---------- Header ---------- */
+header.site {
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--sans);
+  font-size: 0.9375rem;
 }
-.nav-container .links a {
-    text-decoration: none;
-    font-size: 1.1rem;
-    color: #e6edf3;
-    position: relative;
+header.site nav {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
 }
-.nav-container .links a::before {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0%;
-    height: 2px;
-    background: #c58ff0; /* light grape purple underline */
-    transition: 0.3s;
-}
-.nav-container .links a:hover::before {
-    width: 100%;
-}
+header.site .home { color: var(--ink); text-decoration: none; font-weight: 600; }
+header.site ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 24px; flex-wrap: wrap; }
+header.site ul a { color: var(--muted); text-decoration: none; }
+header.site ul a:hover { color: var(--ink); }
 
-/* CONTACT BUTTON */
-.contact-btn {
-    border: 2px solid #c58ff0;
-    padding: 5px 20px;
-    border-radius: 20px;
-}
-.contact-btn:hover {
-    background: #c58ff0;
-}
-.contact-btn:hover a {
-    color: #0e0c14;
-}
+/* ---------- Layout ---------- */
+main { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
 
-/* ================= MOBILE MENU ================= */
-.hamburg, .cancel {
-    display: none;
-    font-size: 2rem;
-    cursor: pointer;
-    position: absolute;
-    right: 20px;
-    top: 15px;
-}
-.dropdown {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    transform: translateY(-500px);
-    background: rgba(14, 12, 23, 0.95);
-    backdrop-filter: blur(8px);
-    transition: 0.3s;
-    z-index: 999;
-}
-.dropdown .links a {
-    display: flex;
-    justify-content: center;
-    padding: 15px 0;
-    text-decoration: none;
-    color: #e6edf3;
-    font-size: 1.2rem;
-}
-.dropdown .links a:hover {
-    background: #c58ff0;
-    color: #0e0c14;
-}
+section { padding: 56px 0; border-bottom: 1px solid var(--rule); }
+section:last-of-type { border-bottom: 0; }
+section > :not(h2) { max-width: 680px; }
 
-/* ================= SECTIONS ================= */
-section {
-    min-height: 100vh;
-    width: 100%;
-    padding: 100px 10%;
-    position: relative;
-    z-index: 1;
-    background: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+h1, h2 { font-weight: 500; letter-spacing: -0.01em; }
+h2 { font-size: 1.75rem; margin: 0 0 24px; }
 
-/* ================= HERO ================= */
+/* ---------- Hero ---------- */
 .hero {
-    min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 56px;
+  align-items: center;
+  padding-top: 72px;
 }
-.main-container {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.hero > * { max-width: none; }
+.hero h1 { font-size: clamp(2.5rem, 6vw, 3.75rem); line-height: 1.05; margin: 0 0 12px; }
+.role { font-family: var(--sans); font-size: 1rem; color: var(--muted); margin: 0 0 28px; }
+.lede { font-size: 1.3125rem; line-height: 1.55; margin: 0 0 28px; max-width: 34em; }
+
+.links { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; font-family: var(--sans); font-size: 1rem; font-weight: 500; }
+
+.repair { margin: 0; }
+.repair svg { width: 100%; height: auto; display: block; }
+.repair .axis { stroke: var(--ink); stroke-width: 1.5; }
+.repair .c1 { fill: var(--c1); }
+.repair .c2 { fill: var(--c2); }
+.repair .c3 { fill: var(--c3); }
+.repair .c4 { fill: var(--c4); }
+.repair .cloud {
+  transform-box: view-box;
+  transform-origin: 160px 160px;
+  animation: realign 1.8s cubic-bezier(.3, .7, .2, 1) 0.5s both;
 }
-.main-container .content {
-    width: 45%;
-    font-family: 'Space Grotesk', sans-serif;
-}
-.content h1 {
-    font-size: clamp(2rem, 4vw, 3rem);
-}
-.content h1 span {
-    color: #c58ff0;
-    text-shadow: 0 0 15px #c58ff0;
+.repair figcaption { font-family: var(--sans); font-size: 0.8125rem; line-height: 1.5; color: var(--muted); margin-top: 10px; }
+
+@keyframes realign {
+  from { transform: rotate(-52deg) scale(0.92); opacity: 0.85; }
+  to   { transform: rotate(0deg) scale(1); opacity: 1; }
 }
 
-/* TYPEWRITER */
-.typewriter {
-    font-size: 2rem;
-    font-weight: 600;
-    color: #b8aadf; /* softer light purple for text */
-}
-.typewriter span {
-    color: #c58ff0;
-}
-.typewriter span::before {
-    content: " a Developer";
-    animation: words 15s infinite;
-}
-.typewriter span::after {
-    content: "";
-    margin-left: 5px;
-    border-left: 3px solid #e6edf3;
-    animation: cursor 0.6s infinite;
-}
-@keyframes cursor {
-    50% { border-color: transparent; }
-}
-@keyframes words {
-    0%, 33% { content: " a Developer"; }
-    34%, 66% { content: " an Engineering Student"; }
-    67%, 100% { content: " a ML Enthusiast"; }
-}
-.content p {
-    margin: 15px 0;
-    font-size: 1rem;
-    color: #b8aadf;
+/* ---------- Research ---------- */
+.themes { margin: 0; }
+.themes dt { font-weight: 600; font-size: 1.1875rem; margin-top: 22px; }
+.themes dt:first-child { margin-top: 0; }
+.themes dd { margin: 4px 0 0; }
+
+/* ---------- Publications ---------- */
+.note { font-family: var(--sans); font-size: 0.9375rem; color: var(--muted); margin: -12px 0 24px; }
+.pubs { margin: 0; padding: 0; list-style: none; }
+.pubs li { margin-bottom: 26px; padding-left: 16px; border-left: 2px solid var(--rule); }
+.pubs p { margin: 0; }
+.pubs .title { font-weight: 500; line-height: 1.4; }
+.pubs .authors { font-size: 1rem; }
+.pubs .venue { font-size: 1rem; font-style: italic; color: var(--muted); }
+.pubs .more { font-family: var(--sans); font-size: 0.9375rem; margin-top: 4px; }
+
+/* ---------- Lists & about ---------- */
+.plain { margin: 0; padding-left: 1.1em; }
+.plain li { margin-bottom: 10px; }
+#about p { margin: 0 0 14px; }
+
+footer { max-width: 1040px; margin: 0 auto; padding: 24px 24px 48px; font-family: var(--sans); font-size: 0.875rem; color: var(--muted); }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 760px) {
+  body { font-size: 1.0625rem; }
+  .hero { grid-template-columns: 1fr; gap: 32px; padding-top: 40px; }
+  .repair { max-width: 260px; }
+  section { padding: 40px 0; }
+  header.site ul { gap: 16px; }
 }
 
-/* SOCIAL ICONS */
-.social-links i {
-    width: 3rem;
-    height: 3rem;
-    border: 2px solid #c58ff0;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #c58ff0;
-    margin: 10px 10px 10px 0;
-    font-size: 1.4rem;
-    transition: 0.3s;
-}
-.social-links i:hover {
-    background: #c58ff0;
-    color: #0e0c14;
-    transform: scale(1.15);
-}
-
-/* BUTTON */
-.content button {
-    width: 200px;
-    height: 45px;
-    margin-top: 20px;
-    background: #c58ff0;
-    color: #0e0c14;
-    border: none;
-    border-radius: 6px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.content button:hover {
-    background: transparent;
-    color: #c58ff0;
-    border: 2px solid #c58ff0;
-    box-shadow: 0 0 25px #c58ff0;
-}
-
-/* ================= ABOUT ================= */
-#about {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 50px;
-}
-#about h2 {
-    font-size: 100px;
-}
-.about-content {
-    max-width: 600px;
-}
-.about-content h1 {
-    font-size: 2.5rem;
-    color: #c58ff0;
-    margin-bottom: 20px;
-}
-.about-content p, .about-content li {
-    color: #b8aadf;
-    font-size: 1rem;
-    line-height: 1.7;
-}
-/*================SKILLS========================*/
-.section-container h2{
-    font-size:2.5rem;
-}
-
-/* ================= RESPONSIVE ================= */
-@media (max-width: 884px) {
-    nav .links { display: none; }
-    .hamburg, .cancel { display: block; }
-    .main-container { flex-direction: column; text-align: center; }
-    .main-container .image, .main-container .content { width: 90%; }
-    #about { flex-direction: column; text-align: center; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .repair .cloud { animation: none; }
 }
