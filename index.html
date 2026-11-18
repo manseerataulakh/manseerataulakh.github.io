@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Ccircle cx=%279%27 cy=%279%27 r=%276%27 fill=%27%232F6DB5%27/%3E%3Ccircle cx=%2723%27 cy=%279%27 r=%276%27 fill=%27%23DD7A22%27/%3E%3Ccircle cx=%279%27 cy=%2723%27 r=%276%27 fill=%27%232E9D5B%27/%3E%3Ccircle cx=%2723%27 cy=%2723%27 r=%276%27 fill=%27%237A55C7%27/%3E%3C/svg%3E" />
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -39,19 +40,22 @@
         </ul>
       </div>
 
-      <figure class="repair" aria-labelledby="repair-caption">
-        <svg viewBox="0 0 320 320" role="img" aria-label="Scattered embedding points rotate back into four clean clusters">
-          <line class="axis" x1="160" y1="20" x2="160" y2="300" />
-          <line class="axis" x1="20" y1="160" x2="300" y2="160" />
-          <g class="cloud">
-            <!-- each point: data-x/y = repaired position; drawn start = scrambled position set in CSS via the rotation -->
-            <circle class="c1" cx="88" cy="86" r="9" /><circle class="c1" cx="110" cy="74" r="5" /><circle class="c1" cx="104" cy="104" r="6" /><circle class="c1" cx="76" cy="108" r="4" />
-            <circle class="c2" cx="230" cy="84" r="9" /><circle class="c2" cx="214" cy="104" r="5" /><circle class="c2" cx="246" cy="106" r="6" /><circle class="c2" cx="234" cy="66" r="4" />
-            <circle class="c3" cx="88" cy="232" r="9" /><circle class="c3" cx="70" cy="220" r="5" /><circle class="c3" cx="106" cy="250" r="6" /><circle class="c3" cx="94" cy="212" r="4" />
-            <circle class="c4" cx="232" cy="234" r="9" /><circle class="c4" cx="212" cy="226" r="5" /><circle class="c4" cx="250" cy="216" r="6" /><circle class="c4" cx="226" cy="254" r="4" />
-          </g>
+      <figure class="space" aria-labelledby="space-caption">
+        <svg id="space" viewBox="-160 -160 320 320" role="img" aria-label="Four clusters of embedding points; use the buttons to damage and repair the space">
+          <line class="axis" x1="0" y1="-140" x2="0" y2="140" />
+          <line class="axis" x1="-140" y1="0" x2="140" y2="0" />
+          <g id="ghosts"></g>
+          <g id="points"></g>
         </svg>
-        <figcaption id="repair-caption">A distilled embedding space, rotated back into place by Procrustes alignment. From my paper on compressed-embedding repair.</figcaption>
+        <div class="controls" role="group" aria-label="Damage and repair the space">
+          <span class="group-label" id="damage-label">Compress it:</span>
+          <button type="button" data-damage="distil" aria-describedby="damage-label">Distil</button>
+          <button type="button" data-damage="quantise" aria-describedby="damage-label">Quantise</button>
+          <button type="button" data-damage="prune" aria-describedby="damage-label">Prune</button>
+          <button type="button" class="repair-btn" id="repair" disabled>Repair with Procrustes</button>
+        </div>
+        <p class="readout" id="readout" aria-live="polite">Damage the space, then try to repair it.</p>
+        <figcaption id="space-caption">A two-dimensional sketch of my compressed-embedding paper: a rotation repairs distillation, but not quantisation noise or pruning. Faint rings mark where each point belongs.</figcaption>
       </figure>
     </section>
 
@@ -119,5 +123,108 @@
   <footer>
     <p>Last updated November 2026.</p>
   </footer>
+  <script>
+  (function () {
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.getElementById('space');
+    var gPts = document.getElementById('points'), gGhost = document.getElementById('ghosts');
+    var readout = document.getElementById('readout'), repairBtn = document.getElementById('repair');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // deterministic pseudo-random numbers so the clusters look the same on every visit
+    var seed = 7;
+    function rand() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    function gauss() { return Math.sqrt(-2 * Math.log(rand() + 1e-9)) * Math.cos(2 * Math.PI * rand()); }
+
+    var centres = [[-72, -72], [72, -72], [-72, 72], [72, 72]];
+    var clean = [], cur = [], dots = [];
+    centres.forEach(function (c, k) {
+      for (var i = 0; i < 9; i++) {
+        var p = [c[0] + gauss() * 13, c[1] + gauss() * 13, k, 3 + rand() * 5];
+        clean.push(p);
+      }
+    });
+    clean.forEach(function (p) {
+      var ring = document.createElementNS(NS, 'circle');
+      ring.setAttribute('r', p[3] + 2.5); ring.setAttribute('class', 'ghost c' + (p[2] + 1));
+      ring.setAttribute('cx', p[0]); ring.setAttribute('cy', p[1]);
+      gGhost.appendChild(ring);
+      var d = document.createElementNS(NS, 'circle');
+      d.setAttribute('r', p[3]); d.setAttribute('class', 'pt c' + (p[2] + 1));
+      gPts.appendChild(d); dots.push(d);
+      cur.push([p[0], p[1]]);
+    });
+
+    function draw() {
+      dots.forEach(function (d, i) { d.style.transform = 'translate(' + cur[i][0].toFixed(1) + 'px,' + cur[i][1].toFixed(1) + 'px)'; });
+    }
+    function error() {
+      var s = 0;
+      cur.forEach(function (q, i) { s += Math.hypot(q[0] - clean[i][0], q[1] - clean[i][1]); });
+      return s / cur.length / 100;
+    }
+
+    var damage = {
+      distil: function () {
+        var t = (40 + rand() * 40) * Math.PI / 180 * (rand() < 0.5 ? -1 : 1);
+        var c = Math.cos(t), s = Math.sin(t);
+        cur = clean.map(function (p) { return [c * p[0] - s * p[1], s * p[0] + c * p[1]]; });
+      },
+      quantise: function () {
+        cur = clean.map(function (p) {
+          function q(v) { return Math.round(v / 60) * 60 + gauss() * 22; }
+          return [q(p[0]), q(p[1])];
+        });
+      },
+      prune: function () {
+        cur = clean.map(function (p) { return [p[0] * 0.12 + gauss() * 4, p[1]]; });
+      }
+    };
+    var names = { distil: 'Distilled', quantise: 'Quantised', prune: 'Pruned' };
+    var last = null;
+
+    // orthogonal Procrustes in 2-D: the best rotation taking the damaged points onto the clean ones
+    function procrustes() {
+      var mx = 0, my = 0, cx = 0, cy = 0, n = cur.length;
+      cur.forEach(function (q, i) { mx += q[0]; my += q[1]; cx += clean[i][0]; cy += clean[i][1]; });
+      mx /= n; my /= n; cx /= n; cy /= n;
+      var a = 0, b = 0;
+      cur.forEach(function (q, i) {
+        var x = q[0] - mx, y = q[1] - my, u = clean[i][0] - cx, v = clean[i][1] - cy;
+        a += x * u + y * v; b += x * v - y * u;
+      });
+      var t = Math.atan2(b, a), c = Math.cos(t), s = Math.sin(t);
+      cur = cur.map(function (q) {
+        var x = q[0] - mx, y = q[1] - my;
+        return [c * x - s * y + cx, s * x + c * y + cy];
+      });
+    }
+
+    var before = 0;
+    document.querySelectorAll('[data-damage]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        last = btn.getAttribute('data-damage');
+        damage[last](); draw();
+        before = error();
+        readout.textContent = names[last] + '. Misalignment: ' + before.toFixed(2) + '.';
+        repairBtn.disabled = false;
+      });
+    });
+    repairBtn.addEventListener('click', function () {
+      procrustes(); draw();
+      var after = error();
+      var verdict = after < before * 0.25 ? 'Rotation repairs it.' : 'Rotation cannot undo this damage.';
+      readout.textContent = names[last] + ' and repaired. Misalignment: ' + before.toFixed(2) + ' \u2192 ' + after.toFixed(2) + '. ' + verdict;
+      repairBtn.disabled = true;
+    });
+
+    draw();
+    // one short demonstration on first load: distil, then repair
+    if (!reduce) {
+      setTimeout(function () { document.querySelector('[data-damage="distil"]').click(); }, 700);
+      setTimeout(function () { repairBtn.click(); }, 2100);
+    }
+  })();
+  </script>
 </body>
 </html>
