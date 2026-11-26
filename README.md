@@ -1,2 +1,2 @@
 # manseerataulakh.github.io
-Personal website of Manseerat Aulakh showcasing projects, skills, and portfolio.
+Research homepage of Manseerat Kaur Aulakh: publications, research themes and projects.
